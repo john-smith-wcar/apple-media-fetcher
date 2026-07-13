@@ -13,7 +13,7 @@ jobs:
         run: |
           python -c "
 import httpx, os
-sql = open('migrations/001_initial.sql').read()
+sql = open('migrations/001_initial.sql').read() + '\n' + open('migrations/002_unique_snapshot.sql').read()
 resp = httpx.post(
     'https://api.supabase.com/v1/projects/sklucwepsozswptaiezq/sql',
     headers={'Authorization': f'Bearer {os.environ[\"SUPABASE_KEY\"]}', 'Content-Type': 'application/json'},

@@ -3,7 +3,7 @@ import os
 import sys
 
 from fetcher import run_media_fetch
-from db import upsert_media_items, insert_snapshots
+from db import upsert_media_items, upsert_snapshots
 
 
 def main():
@@ -23,7 +23,7 @@ def main():
     print(f"  Items: {len(items)}, Snapshots: {len(snapshots)}")
 
     upsert_media_items(items)
-    insert_snapshots(snapshots)
+    upsert_snapshots(snapshots)
     print("Done.")
 
 

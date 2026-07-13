@@ -48,7 +48,7 @@ def upsert_media_items(items: list[dict]):
         print(f"  Upserted {min(i + BATCH_SIZE, len(deduped))}/{len(deduped)} media items")
 
 
-def insert_snapshots(snapshots: list[dict]):
+def upsert_snapshots(snapshots: list[dict]):
     if not snapshots:
         return
 
@@ -59,9 +59,11 @@ def insert_snapshots(snapshots: list[dict]):
             s["snap_time"] = s["snap_time"].isoformat()
         serialized.append(s)
 
-    headers = _headers()
+    hdrs = _headers()
+    hdrs["Prefer"] = "resolution=merge-duplicates"
     url = f"{_base()}/ranking_snapshots"
+    params = {"on_conflict": "media_type,store_front,content_type,chart,snap_time"}
     for i in range(0, len(serialized), BATCH_SIZE):
         batch = serialized[i : i + BATCH_SIZE]
-        _post_batch(url, headers, batch)
-        print(f"  Inserted {min(i + BATCH_SIZE, len(serialized))}/{len(serialized)} ranking snapshots")
+        _post_batch(url, hdrs, batch, params)
+        print(f"  Upserted {min(i + BATCH_SIZE, len(serialized))}/{len(serialized)} ranking snapshots")

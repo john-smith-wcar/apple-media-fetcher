@@ -128,7 +128,7 @@ def parse_rank_ids(data: dict) -> list[str]:
 
 async def run_media_fetch(media_type: str, content_type: str, chart: str) -> dict:
     tasks = build_tasks(media_type, content_type, chart)
-    snap_time = datetime.now(timezone.utc)
+    snap_time = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
 
     async with httpx.AsyncClient(timeout=30.0) as client:
         sem = asyncio.Semaphore(CONCURRENCY)

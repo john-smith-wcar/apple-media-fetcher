@@ -6,4 +6,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: psql "${{ secrets.SUPABASE_URL }}" -f migrations/001_initial.sql
+      - name: Resolve IPv4 and run migration
+        run: |
+          IP=$(dig +short db.sklucwepsozswptaiezq.supabase.co A | head -1)
+          echo "IPv4: $IP"
+          DB_URL="${{ secrets.SUPABASE_URL }}"
+          DB_URL="${DB_URL/@db.sklucwepsozswptaiezq.supabase.co/@$IP}"
+          psql "$DB_URL" sslmode=require -f migrations/001_initial.sql

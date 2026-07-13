@@ -1,0 +1,19 @@
+name: podcasts-top-subscriber
+on:
+  schedule:
+    - cron: "50 12 * * *"
+  workflow_dispatch:
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -r requirements.txt
+      - run: python src/scheduler.py
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          MEDIA_TYPE: podcasts
+          CONTENT_TYPE: podcasts
+          CHART: top-subscriber

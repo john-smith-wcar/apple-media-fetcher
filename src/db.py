@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 
 import httpx
 
@@ -50,9 +51,17 @@ def upsert_media_items(items: list[dict]):
 def insert_snapshots(snapshots: list[dict]):
     if not snapshots:
         return
+
+    serialized = []
+    for snap in snapshots:
+        s = dict(snap)
+        if isinstance(s.get("snap_time"), datetime):
+            s["snap_time"] = s["snap_time"].isoformat()
+        serialized.append(s)
+
     headers = _headers()
     url = f"{_base()}/ranking_snapshots"
-    for i in range(0, len(snapshots), BATCH_SIZE):
-        batch = snapshots[i : i + BATCH_SIZE]
+    for i in range(0, len(serialized), BATCH_SIZE):
+        batch = serialized[i : i + BATCH_SIZE]
         _post_batch(url, headers, batch)
-        print(f"  Inserted {min(i + BATCH_SIZE, len(snapshots))}/{len(snapshots)} ranking snapshots")
+        print(f"  Inserted {min(i + BATCH_SIZE, len(serialized))}/{len(serialized)} ranking snapshots")

@@ -1,4 +1,5 @@
 import os
+import re
 from datetime import datetime
 
 import httpx
@@ -38,14 +39,24 @@ def upsert_media_items(items: list[dict]):
             seen.add(iid)
             deduped.append(item)
 
+    serialized = []
+    for item in deduped:
+        it = dict(item)
+        rd = it.get("release_date")
+        if rd and isinstance(rd, str) and re.match(r"^\d{4}$", rd):
+            it["release_date"] = f"{rd}-01-01T00:00:00Z"
+        elif rd and isinstance(rd, str) and re.match(r"^\d{4}-\d{2}-\d{2}$", rd):
+            it["release_date"] = f"{rd}T00:00:00Z"
+        serialized.append(it)
+
     hdrs = _headers()
     hdrs["Prefer"] = "resolution=merge-duplicates"
     url = f"{_base()}/media_items"
     params = {"on_conflict": "id"}
-    for i in range(0, len(deduped), BATCH_SIZE):
-        batch = deduped[i : i + BATCH_SIZE]
+    for i in range(0, len(serialized), BATCH_SIZE):
+        batch = serialized[i : i + BATCH_SIZE]
         _post_batch(url, hdrs, batch, params)
-        print(f"  Upserted {min(i + BATCH_SIZE, len(deduped))}/{len(deduped)} media items")
+        print(f"  Upserted {min(i + BATCH_SIZE, len(serialized))}/{len(serialized)} media items")
 
 
 def upsert_snapshots(snapshots: list[dict]):

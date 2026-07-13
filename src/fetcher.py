@@ -1,5 +1,4 @@
 import asyncio
-import json
 import random
 import time
 from datetime import datetime, timezone
@@ -107,7 +106,7 @@ def parse_items(media_type: str, data: dict) -> list[dict]:
             "artist_name": str(artist or ""),
             "artwork_url": str(artwork or ""),
             "url": str(link or ""),
-            "genres": json.dumps(genres),
+            "genres": genres,
             "release_date": release,
         })
     return items

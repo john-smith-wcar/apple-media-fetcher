@@ -54,7 +54,7 @@ async def fetch_single(client: httpx.AsyncClient, url: str) -> dict | None:
                 await asyncio.sleep(wait)
                 continue
             return None
-        except (httpx.TimeoutException, httpx.ConnectError):
+        except httpx.HTTPError:
             if attempt == MAX_RETRIES:
                 return None
             await asyncio.sleep(2 ** attempt)

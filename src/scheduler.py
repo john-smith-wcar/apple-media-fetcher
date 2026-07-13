@@ -23,11 +23,7 @@ def main():
     print(f"  Items: {len(items)}, Snapshots: {len(snapshots)}")
 
     upsert_media_items(items)
-    print(f"  Upserted {len(items)} media items")
-
     insert_snapshots(snapshots)
-    print(f"  Inserted {len(snapshots)} ranking snapshots")
-
     print("Done.")
 
 

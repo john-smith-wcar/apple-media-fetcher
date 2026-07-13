@@ -43,10 +43,15 @@ def upsert_media_items(items: list[dict]):
     for item in deduped:
         it = dict(item)
         rd = it.get("release_date")
-        if rd and isinstance(rd, str) and re.match(r"^\d{4}$", rd):
-            it["release_date"] = f"{rd}-01-01T00:00:00Z"
-        elif rd and isinstance(rd, str) and re.match(r"^\d{4}-\d{2}-\d{2}$", rd):
-            it["release_date"] = f"{rd}T00:00:00Z"
+        if rd and isinstance(rd, str):
+            if re.match(r"^\d{4}$", rd):
+                it["release_date"] = f"{rd}-01-01T00:00:00Z"
+            elif re.match(r"^\d{4}-\d{2}$", rd):
+                it["release_date"] = f"{rd}-01T00:00:00Z"
+            elif re.match(r"^\d{4}-\d{2}-\d{2}$", rd):
+                it["release_date"] = f"{rd}T00:00:00Z"
+            elif not re.match(r"^\d{4}-\d{2}-\d{2}T", rd):
+                it["release_date"] = None
         serialized.append(it)
 
     hdrs = _headers()

@@ -72,7 +72,8 @@ def parse_items(media_type: str, data: dict) -> list[dict]:
         item_id = entry.get("id") or entry.get("id", {}).get("attributes", {}).get("im:id")
         if not item_id:
             continue
-        name = (entry.get("im:name", {}) or {}).get("label") or entry.get("name", {}).get("label") or entry.get("collectionName") or entry.get("trackName")
+        raw_name = entry.get("name")
+        name = (entry.get("im:name", {}) or {}).get("label") or (raw_name.get("label") if isinstance(raw_name, dict) else raw_name) or entry.get("collectionName") or entry.get("trackName")
         artist = (entry.get("im:artist", {}) or {}).get("label") or entry.get("artistName")
         artwork = None
         for key in ("im:image", "artworkUrl100", "artworkUrl60"):

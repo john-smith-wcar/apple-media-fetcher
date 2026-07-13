@@ -6,8 +6,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Run migration
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install httpx
+      - name: Run migration SQL via Supabase Management API
         run: |
-          host db.sklucwepsozswptaiezq.supabase.co
-          nslookup db.sklucwepsozswptaiezq.supabase.co 2>&1 || true
-          PGPASSWORD="${{ secrets.SUPABASE_PASSWORD }}" psql -h db.sklucwepsozswptaiezq.supabase.co -p 5432 -U postgres -d postgres sslmode=require -f migrations/001_initial.sql
+          python -c "
+import httpx, os
+sql = open('migrations/001_initial.sql').read()
+resp = httpx.post(
+    'https://api.supabase.com/v1/projects/sklucwepsozswptaiezq/sql',
+    headers={'Authorization': f'Bearer {os.environ[\"SUPABASE_KEY\"]}', 'Content-Type': 'application/json'},
+    json={'query': sql},
+)
+resp.raise_for_status()
+print('Migration OK')
+"
+        env:
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}

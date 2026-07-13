@@ -28,14 +28,23 @@ def _post_batch(url: str, headers: dict, batch: list[dict], params: dict | None 
 def upsert_media_items(items: list[dict]):
     if not items:
         return
+
+    seen = set()
+    deduped = []
+    for item in items:
+        iid = item["id"]
+        if iid not in seen:
+            seen.add(iid)
+            deduped.append(item)
+
     hdrs = _headers()
     hdrs["Prefer"] = "resolution=merge-duplicates"
     url = f"{_base()}/media_items"
     params = {"on_conflict": "id"}
-    for i in range(0, len(items), BATCH_SIZE):
-        batch = items[i : i + BATCH_SIZE]
+    for i in range(0, len(deduped), BATCH_SIZE):
+        batch = deduped[i : i + BATCH_SIZE]
         _post_batch(url, hdrs, batch, params)
-        print(f"  Upserted {min(i + BATCH_SIZE, len(items))}/{len(items)} media items")
+        print(f"  Upserted {min(i + BATCH_SIZE, len(deduped))}/{len(deduped)} media items")
 
 
 def insert_snapshots(snapshots: list[dict]):

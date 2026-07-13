@@ -14,6 +14,7 @@ jobs:
       - run: python src/scheduler.py
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
           MEDIA_TYPE: books
           CONTENT_TYPE: books
           CHART: top-paid

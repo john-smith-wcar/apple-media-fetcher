@@ -1,3 +1,4 @@
+import asyncio
 import os
 import sys
 
@@ -15,7 +16,7 @@ def main():
         sys.exit(1)
 
     print(f"Fetching {media_type}/{content_type}/{chart} ...")
-    result = run_media_fetch(media_type, content_type, chart)
+    result = asyncio.run(run_media_fetch(media_type, content_type, chart))
 
     items = result["items"]
     snapshots = result["snapshots"]

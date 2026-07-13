@@ -1,0 +1,15 @@
+SCHEDULE = [
+    ("00:00", "apps", "apps", "top-free"),
+    ("01:50", "apps", "apps", "top-paid"),
+    ("03:40", "music", "albums", "most-played"),
+    ("05:30", "music", "music-videos", "most-played"),
+    ("07:20", "music", "playlists", "most-played"),
+    ("09:10", "music", "songs", "most-played"),
+    ("11:00", "podcasts", "podcasts", "top"),
+    ("12:50", "podcasts", "podcasts", "top-subscriber"),
+    ("14:40", "podcasts", "podcast-episodes", "top"),
+    ("16:30", "podcasts", "podcast-channels", "top-subscriber"),
+    ("18:20", "books", "books", "top-free"),
+    ("20:10", "books", "books", "top-paid"),
+    ("22:00", "audiobooks", "audiobooks", "top"),
+]
